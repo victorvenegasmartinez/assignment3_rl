@@ -64,7 +64,7 @@ if __name__ == "__main__":
                             no_baseline_directory
                         )
                     )
-                if not os.path.isdir(no_baseline_directory):
+                if not os.path.isdir(baseline_directory):
                     sys.exit(
                         "{} was not found. Please ensure you have generated results for this environment, seed and baseline combination".format(
                             baseline_directory
