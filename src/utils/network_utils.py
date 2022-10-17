@@ -1,9 +1,10 @@
 import math
 
-import torch 
+import torch
 import torch.nn as nn
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 
 def np2torch(x, cast_double_to_float=True):
     """
@@ -16,6 +17,7 @@ def np2torch(x, cast_double_to_float=True):
     if cast_double_to_float and x.dtype is torch.float64:
         x = x.float()
     return x
+
 
 def batch_iterator(*args, batch_size=1000, shuffle=False):
     """
