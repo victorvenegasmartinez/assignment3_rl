@@ -133,19 +133,19 @@ class PolicyGradient(object):
         t = 0
 
         while num_episodes or t < self.config["hyper_params"]["batch_size"]:
-            state = env.reset()
+            state, info = env.reset()
             states, actions, rewards = [], [], []
             episode_reward = 0
 
             for step in range(self.config["hyper_params"]["max_ep_len"]):
                 states.append(state)
                 action = self.policy.act(states[-1][None])[0]
-                state, reward, done, info = env.step(action)
+                state, reward, terminated, truncated, info = env.step(action)
                 actions.append(action)
                 rewards.append(reward)
                 episode_reward += reward
                 t += 1
-                if done or step == self.config["hyper_params"]["max_ep_len"] - 1:
+                if terminated or truncated or step == self.config["hyper_params"]["max_ep_len"] - 1:
                     episode_rewards.append(episode_reward)
                     break
                 if (not num_episodes) and t == self.config["hyper_params"][
@@ -395,7 +395,10 @@ class PolicyGradient(object):
         """
         Recreate an env and record a video for one episode
         """
-        env = gym.make(self.config["env"]["env_name"])
+        env = gym.make(
+            self.config["env"]["env_name"],
+            render_mode="rgb_array"
+        )
         env.reset(seed=self.seed)
         env = gym.wrappers.RecordVideo(
             env,
