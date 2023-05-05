@@ -3,7 +3,7 @@ import torch
 import gym
 import os
 from utils.general import get_logger, Progbar, export_plot
-from utils.network_utils import device, np2torch
+from utils.network_utils import np2torch
 from submission.baseline_network import BaselineNetwork
 from submission.mlp import build_mlp
 from submission.policy import CategoricalPolicy, GaussianPolicy
@@ -50,12 +50,27 @@ class PolicyGradient(object):
 
         self.lr = self.config["hyper_params"]["learning_rate"]
 
+        self.device = torch.device("cpu")
+        if config["model_training"]["device"] == "gpu":
+            if torch.cuda.is_available(): 
+                self.device = torch.device("cuda")
+            elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+                self.device = torch.device("mps")
+
         self.init_policy()
 
         if config["model_training"]["use_baseline"]:
-            self.baseline_network = BaselineNetwork(env, config).to(
-                torch.device("cuda" if torch.cuda.is_available() else "cpu")
-            )
+            self.baseline_network = BaselineNetwork(env, config).to(self.device)
+
+        try:
+            if self.config["model_training"]["compile"] == True:
+                self.network = torch.compile(self.network, mode=self.config["model_training"]["compile_mode"])
+                self.policy = torch.compile(self.policy, mode=self.config["model_training"]["compile_mode"])
+                if config["model_training"]["use_baseline"]:
+                    self.baseline_network = torch.compile(self.baseline_network, mode=self.config["model_training"]["compile_mode"])
+                print("Model compiled")
+        except Exception as err:
+            print(f"Model compile not supported: {err}")
 
     def init_policy(self):
         """
@@ -266,9 +281,9 @@ class PolicyGradient(object):
             PyTorch optimizers will try to minimize the loss you compute, but you
             want to maximize the policy's performance.
         """
-        observations = np2torch(observations)
-        actions = np2torch(actions)
-        advantages = np2torch(advantages)
+        observations = np2torch(observations, device=self.device)
+        actions = np2torch(actions, device=self.device)
+        advantages = np2torch(advantages, device=self.device)
         ### START CODE HERE ###
         ### END CODE HERE ###
 
@@ -286,9 +301,7 @@ class PolicyGradient(object):
         averaged_total_rewards = []  # the returns for each iteration
 
         # set policy to device
-        self.policy = self.policy.to(
-            torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        )
+        self.policy = self.policy.to(self.device)
 
         for t in range(self.config["hyper_params"]["num_batches"]):
 
