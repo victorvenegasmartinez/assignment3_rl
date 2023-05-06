@@ -3,19 +3,18 @@ import math
 import torch
 import torch.nn as nn
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-
-def np2torch(x, cast_double_to_float=True):
+def np2torch(x, cast_double_to_float=True, device=torch.device("cpu")):
     """
     Utility function that accepts a numpy array and does the following:
         1. Convert to torch tensor
         2. Move it to the GPU (if CUDA is available)
         3. Optionally casts float64 to float32 (torch is picky about types)
     """
-    x = torch.from_numpy(x).to(device)
+    x = torch.from_numpy(x)
     if cast_double_to_float and x.dtype is torch.float64:
         x = x.float()
+    x = x.to(device)
     return x
 
 

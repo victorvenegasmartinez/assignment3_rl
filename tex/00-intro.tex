@@ -13,10 +13,10 @@ By the end of this assignment, you should have an understanding of how to implem
 
   \item We provide ~conda~ environment for preparing development environment. However, in case there is an issue, we also provide ~docker~ environment.
 
-  \item To setup ~conda~ environment, for CPU environment use ~environment.yml~, for GPU use ~environment_gpu.yml~. Here is the command:
+  \item To setup ~conda~ environment, for CPU environment use ~environment.yml~, for CUDA use ~environment_cuda.yml~. Here is the command:
     \begin{lstlisting}
     $ conda update -n base conda
-    $ conda env create --file environment.yml #  environment_gpu.yml for GPU
+    $ conda env create --file environment.yml #  environment_cuda.yml for CUDA
     \end{lstlisting}
   \item If you choose to run the assignment code on CPU using the Dockerfile please follow these instructions:
     \begin{itemize}
@@ -26,9 +26,9 @@ By the end of this assignment, you should have an understanding of how to implem
 
   \item If you choose to run the assignment code on GPU using the Dockerfile please follow these instructions:
     \begin{itemize}
-        \item build the image from the folder where the Dockerfile is located: ~docker build -t xcs234-a3-gpu --build-arg GPU=Y .~
+        \item build the image from the folder where the Dockerfile is located: ~docker build -t xcs234-a3-cuda --build-arg CUDA=Y .~
         \item install the nvidia-container-toolkit: ~sudo apt-get install nvidia-container-toolkit~
-        \item run the image with GPU support: ~docker run --rm -it -v /home/scpdxcs/xcs234/A3:/home/scpdxcs/A3 --privileged --gpus all xcs234-a3-gpu~
+        \item run the image with GPU support: ~docker run --rm -it -v /home/scpdxcs/xcs234/A3:/home/scpdxcs/A3 --privileged --gpus all xcs234-a3-cuda~
     \end{itemize}
 
   \item To learn more about Docker and containerization visit \href{https://docs.docker.com/get-started/}{Docker Get Started}.

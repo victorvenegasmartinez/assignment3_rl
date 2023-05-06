@@ -1,4 +1,4 @@
-name: XCS234_A3
+name: XCS234_A3_CUDA
 channels:
   - defaults
   - conda-forge
@@ -22,5 +22,4 @@ dependencies:
     - gym==0.26.2
     - mujoco==2.3.5
     - "--find-links https://download.pytorch.org/whl/torch_stable.html"
-    - torch==2.0.0; sys_platform != "linux" and sys_platform != "win32"
-    - torch==2.0.0+cpu; sys_platform == "linux" or sys_platform == "win32"
+    - torch==2.0.0+cu117

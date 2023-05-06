@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from utils.network_utils import device, np2torch
+from utils.network_utils import np2torch
 from submission.mlp import build_mlp
 
 
@@ -25,6 +25,12 @@ class BaselineNetwork(nn.Module):
         self.config = config
         self.env = env
         self.lr = self.config["hyper_params"]["learning_rate"]
+        self.device = torch.device("cpu")
+        if self.config["model_training"]["device"] == "gpu":
+            if torch.cuda.is_available(): 
+                self.device = torch.device("cuda")
+            elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+                self.device = torch.device("mps")
 
         ### START CODE HERE ###
         ### END CODE HERE ###
@@ -78,7 +84,7 @@ class BaselineNetwork(nn.Module):
             this can be directly converted to a numpy array. Further details can be found here:
             https://pytorch.org/docs/stable/generated/torch.Tensor.cpu.html
         """
-        observations = np2torch(observations)
+        observations = np2torch(observations, device=self.device)
         ### START CODE HERE ###
         ### END CODE HERE ###
         return advantages
@@ -98,7 +104,7 @@ class BaselineNetwork(nn.Module):
             If you want to use mini-batch SGD, we have provided a helper function
             called batch_iterator (implemented in utils/network_utils.py).
         """
-        returns = np2torch(returns)
-        observations = np2torch(observations)
+        returns = np2torch(returns, device=self.device)
+        observations = np2torch(observations, device=self.device)
         ### START CODE HERE ###
         ### END CODE HERE ###

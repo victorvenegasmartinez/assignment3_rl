@@ -3,10 +3,15 @@ import torch.nn as nn
 import torch.distributions as ptd
 
 from abc import ABC, abstractmethod
-from utils.network_utils import device, np2torch
+from utils.network_utils import np2torch
 
 
 class BasePolicy(ABC):
+
+    def __init__(self, device):
+        ABC.__init__(self)
+        self.device = device
+
     @abstractmethod
     def action_distribution(self, observations):
         """
@@ -56,16 +61,18 @@ class BasePolicy(ABC):
             https://pytorch.org/docs/stable/generated/torch.Tensor.cpu.html.
             Put the result in a variable called sampled_actions (which will be returned).
         """
-        observations = np2torch(observations)
+        observations = np2torch(observations, device=self.device)
         ### START CODE HERE ###
         ### END CODE HERE ###
         return sampled_actions
 
 
 class CategoricalPolicy(BasePolicy, nn.Module):
-    def __init__(self, network):
+    def __init__(self, network, device):
         nn.Module.__init__(self)
+        BasePolicy.__init__(self, device)
         self.network = network
+        self.device = device
 
     def action_distribution(self, observations):
         """
@@ -105,9 +112,11 @@ class GaussianPolicy(BasePolicy, nn.Module):
         documentation https://pytorch.org/docs/stable/generated/torch.nn.parameter.Parameter.html
     """
 
-    def __init__(self, network, action_dim):
+    def __init__(self, network, action_dim, device):
         nn.Module.__init__(self)
+        BasePolicy.__init__(self, device)
         self.network = network
+        self.device = device
         ### START CODE HERE ###
         ### END CODE HERE ###
 

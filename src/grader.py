@@ -19,7 +19,7 @@ import yaml
 import time
 
 from utils.general import join
-from utils.network_utils import np2torch, device
+from utils.network_utils import np2torch
 
 # Import submission
 from submission.baseline_network import BaselineNetwork
@@ -53,7 +53,7 @@ if os.path.exists("./submission/model_artifacts"):
 else:
     model_path = "./submission"
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 
 ### BEGIN_HIDE ###
 ### END_HIDE ###
@@ -68,12 +68,17 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Baseline
 class Test_1b(GradedTestCase):
+
+    def setUp(self):
+
+        self.config = cartpole_config
+        self.config["model_training"]["device"] = "cpu"
+
     @graded(timeout=1, is_hidden=False)
     def test_0(self):
         """1b-0-basic: test baseline for the existence of optimizer"""
-        config = cartpole_config
-        env = gym.make(config["env"]["env_name"])
-        baseline = BaselineNetwork(env, config)
+        env = gym.make(self.config["env"]["env_name"])
+        baseline = BaselineNetwork(env, self.config)
         self.assertTrue(hasattr(baseline, "optimizer"))
         self.assertTrue(isinstance(baseline.optimizer, torch.optim.Optimizer))
 
@@ -83,12 +88,17 @@ class Test_1b(GradedTestCase):
 
 # Policy
 class Test_1c(GradedTestCase):
+
+    def setUp(self):
+
+        self.config = cartpole_config
+        self.config["model_training"]["device"] = "cpu"
+
     @graded(timeout=3, is_hidden=False)
     def test_0(self):
         """1c-0-basic: test policy for the existence of optimizer"""
-        config = cartpole_config
-        env = gym.make(config["env"]["env_name"])
-        pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
+        env = gym.make(self.config["env"]["env_name"])
+        pg = PolicyGradient(env, self.config, seed=self.config["env"]["seed"][0])
         self.assertTrue(hasattr(pg, "optimizer"))
         self.assertTrue(isinstance(pg.optimizer, torch.optim.Optimizer))
 
@@ -141,6 +151,7 @@ class Test_1f(GradedTestCase):
     def test_0(self):
         """1f-0-basic: test sampled actions (cartpole)"""
         config = cartpole_config
+        config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         pg.policy = pg.policy.to(device)
@@ -160,6 +171,7 @@ class Test_1f(GradedTestCase):
     def test_1(self):
         """1f-1-basic: test sampled actions (pendulum)"""
         config = pendulum_config
+        config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         pg.policy = pg.policy.to(device)
@@ -179,6 +191,7 @@ class Test_1f(GradedTestCase):
     def test_2(self):
         """1f-2-basic: test sampled actions (cheetah)"""
         config = cheetah_config
+        config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         pg.policy = pg.policy.to(device)
@@ -201,6 +214,7 @@ class Test_1g(GradedTestCase):
     def test_0(self):
         """1g-0-basic: test log probabilities (cartpole)"""
         config = cartpole_config
+        config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         ref_pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
@@ -227,6 +241,12 @@ class Test_1g(GradedTestCase):
     def test_1(self):
         """1g-1-basic: test log probabilities (pendulum)"""
         config = pendulum_config
+        device = torch.device("cpu")
+        if config["model_training"]["device"] == "gpu":
+            if torch.cuda.is_available(): 
+                device = torch.device("cuda")
+            elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+                device = torch.device("mps")
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         ref_pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
@@ -253,6 +273,7 @@ class Test_1g(GradedTestCase):
     def test_2(self):
         """1g-2-basic: test log probabilities (cheetah)"""
         config = cheetah_config
+        config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         ref_pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
