@@ -14,7 +14,8 @@ class BaselineNetwork(nn.Module):
         config (dict): A dictionary containing generated from reading a yaml configuration file
 
     TODO:
-        Create self.network using build_mlp, and create an Adam optimizer and assign it to
+        Create self.network using build_mlp, with observations space dimensional input 
+        and 1-dimensional output. Create an Adam optimizer and assign it to
         self.optimizer which will be used later to optimize the network parameters.
         You should make use of some values from config, such as the number of layers,
         the size of the layers, and the learning rate.
