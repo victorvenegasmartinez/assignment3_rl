@@ -3,7 +3,7 @@ import os
 import sys
 import numpy as np
 import torch
-import gym
+import gymnasium as gym
 import matplotlib
 
 matplotlib.use("agg")

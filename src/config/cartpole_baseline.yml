@@ -17,7 +17,7 @@ model_training:
 hyper_params: 
     max_ep_len: 200 # maximum episode length (Note: this value must be strictly less than or equal to our batch size)
     num_batches: 100 # number of batches trained on
-    batch_size: 2000 # number of steps used to compute each policy update
+    batch_size: 4000 # number of steps used to compute each policy update
     learning_rate: 0.03
     gamma: 0.9 # the discount factor
     n_layers: 1

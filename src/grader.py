@@ -11,7 +11,7 @@ import pickle
 import gzip
 from itertools import product
 from graderUtil import graded, CourseTestRunner, GradedTestCase
-import gym
+import gymnasium as gym
 import numpy as np
 import torch
 import torch.nn as nn
@@ -106,10 +106,10 @@ class Test_1c(GradedTestCase):
 ### END_HIDE ###
 
 # Policy Gradient: get_returns
-class Test_1e(GradedTestCase):
+class Test_1d(GradedTestCase):
     @graded(timeout=1, is_hidden=False)
     def test_0(self):
-        """1e-0-basic: test get_returns with basic trajectory"""
+        """1d-0-basic: test get_returns with basic trajectory"""
         config = cartpole_config
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=1)
@@ -122,7 +122,7 @@ class Test_1e(GradedTestCase):
 
     @graded(timeout=1, is_hidden=False)
     def test_1(self):
-        """1e-1-basic: test get_returns for discounted trajectory"""
+        """1d-1-basic: test get_returns for discounted trajectory"""
         config = cartpole_config
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=1)
@@ -146,10 +146,10 @@ class Test_1e(GradedTestCase):
 
 
 # Policy Gradient: sampled actions
-class Test_1f(GradedTestCase):
+class Test_1e(GradedTestCase):
     @graded(timeout=5, is_hidden=False)
     def test_0(self):
-        """1f-0-basic: test sampled actions (cartpole)"""
+        """1e-0-basic: test sampled actions (cartpole)"""
         config = cartpole_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -169,7 +169,7 @@ class Test_1f(GradedTestCase):
 
     @graded(timeout=7, is_hidden=False)
     def test_1(self):
-        """1f-1-basic: test sampled actions (pendulum)"""
+        """1e-1-basic: test sampled actions (pendulum)"""
         config = pendulum_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -189,7 +189,7 @@ class Test_1f(GradedTestCase):
 
     @graded(timeout=7, is_hidden=False)
     def test_2(self):
-        """1f-2-basic: test sampled actions (cheetah)"""
+        """1e-2-basic: test sampled actions (cheetah)"""
         config = cheetah_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -209,10 +209,10 @@ class Test_1f(GradedTestCase):
 
 
 # Policy Gradient
-class Test_1g(GradedTestCase):
+class Test_1f(GradedTestCase):
     @graded(timeout=4, is_hidden=False)
     def test_0(self):
-        """1g-0-basic: test log probabilities (cartpole)"""
+        """1f-0-basic: test log probabilities (cartpole)"""
         config = cartpole_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -239,14 +239,15 @@ class Test_1g(GradedTestCase):
 
     @graded(timeout=4, is_hidden=False)
     def test_1(self):
-        """1g-1-basic: test log probabilities (pendulum)"""
+        """1f-1-basic: test log probabilities (pendulum)"""
         config = pendulum_config
         device = torch.device("cpu")
         if config["model_training"]["device"] == "gpu":
-            if torch.cuda.is_available(): 
+            if torch.cuda.is_available():
                 device = torch.device("cuda")
             elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
                 device = torch.device("mps")
+        print(f"Running model on device {device}")
         env = gym.make(config["env"]["env_name"])
         pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
         ref_pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
@@ -271,7 +272,7 @@ class Test_1g(GradedTestCase):
 
     @graded(timeout=4, is_hidden=False)
     def test_2(self):
-        """1g-2-basic: test log probabilities (cheetah)"""
+        """1f-2-basic: test log probabilities (cheetah)"""
         config = cheetah_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])

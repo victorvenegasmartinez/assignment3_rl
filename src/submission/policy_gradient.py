@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-import gym
+import gymnasium as gym
 import os
 from utils.general import get_logger, Progbar, export_plot
 from utils.network_utils import np2torch
@@ -52,11 +52,11 @@ class PolicyGradient(object):
 
         self.device = torch.device("cpu")
         if config["model_training"]["device"] == "gpu":
-            if torch.cuda.is_available(): 
+            if torch.cuda.is_available():
                 self.device = torch.device("cuda")
             elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
                 self.device = torch.device("mps")
-
+        print(f"Running Policy Gradient model on device {self.device}")
         self.init_policy()
 
         if config["model_training"]["use_baseline"]:
@@ -64,10 +64,17 @@ class PolicyGradient(object):
 
         try:
             if self.config["model_training"]["compile"] == True:
-                self.network = torch.compile(self.network, mode=self.config["model_training"]["compile_mode"])
-                self.policy = torch.compile(self.policy, mode=self.config["model_training"]["compile_mode"])
+                self.network = torch.compile(
+                    self.network, mode=self.config["model_training"]["compile_mode"]
+                )
+                self.policy = torch.compile(
+                    self.policy, mode=self.config["model_training"]["compile_mode"]
+                )
                 if config["model_training"]["use_baseline"]:
-                    self.baseline_network = torch.compile(self.baseline_network, mode=self.config["model_training"]["compile_mode"])
+                    self.baseline_network = torch.compile(
+                        self.baseline_network,
+                        mode=self.config["model_training"]["compile_mode"],
+                    )
                 print("Model compiled")
         except Exception as err:
             print(f"Model compile not supported: {err}")
@@ -160,7 +167,11 @@ class PolicyGradient(object):
                 rewards.append(reward)
                 episode_reward += reward
                 t += 1
-                if terminated or truncated or step == self.config["hyper_params"]["max_ep_len"] - 1:
+                if (
+                    terminated
+                    or truncated
+                    or step == self.config["hyper_params"]["max_ep_len"] - 1
+                ):
                     episode_rewards.append(episode_reward)
                     break
                 if (not num_episodes) and t == self.config["hyper_params"][
@@ -356,17 +367,21 @@ class PolicyGradient(object):
                 self.policy.state_dict(),
                 "submission/{}-{}-model-weights.pt".format(
                     self.config["env"]["env_name"],
-                    "baseline"
-                    if self.config["model_training"]["use_baseline"]
-                    else "no-baseline",
+                    (
+                        "baseline"
+                        if self.config["model_training"]["use_baseline"]
+                        else "no-baseline"
+                    ),
                 ),
             )
             np.save(
                 "submission/{}-{}-scores.npy".format(
                     self.config["env"]["env_name"],
-                    "baseline"
-                    if self.config["model_training"]["use_baseline"]
-                    else "no-baseline",
+                    (
+                        "baseline"
+                        if self.config["model_training"]["use_baseline"]
+                        else "no-baseline"
+                    ),
                 ),
                 averaged_total_rewards,
             )
@@ -408,10 +423,7 @@ class PolicyGradient(object):
         """
         Recreate an env and record a video for one episode
         """
-        env = gym.make(
-            self.config["env"]["env_name"],
-            render_mode="rgb_array"
-        )
+        env = gym.make(self.config["env"]["env_name"], render_mode="rgb_array")
         env.reset(seed=self.seed)
         env = gym.wrappers.RecordVideo(
             env,
