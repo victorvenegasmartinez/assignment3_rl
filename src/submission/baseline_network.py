@@ -32,7 +32,7 @@ class BaselineNetwork(nn.Module):
                 self.device = torch.device("cuda")
             elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
                 self.device = torch.device("mps")
-
+        print(f"Running Baseline model on device {self.device}")
         ### START CODE HERE ###
         ### END CODE HERE ###
 
