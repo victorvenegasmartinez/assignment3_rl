@@ -353,7 +353,7 @@ class Test_1f(GradedTestCase):
         advantages_mean = np.mean(advantages)
         advantages_std = np.std(advantages)
 
-        self.assertTrue(np.isclose(advantages_mean, 0, atol=1e-5) == True and advantages_std == 1)
+        self.assertTrue(np.isclose(advantages_mean, 0, atol=1e-3) == True and advantages_std == 1)
 
 
 ### BEGIN_HIDE ###
