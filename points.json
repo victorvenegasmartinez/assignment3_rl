@@ -17,14 +17,15 @@
   "1d-1-basic" : {"points":1.5, "question_id":"1d", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
   "1d-2-hidden" : {"points":3, "question_id":"1d", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
 
-  "1e-0-basic" : {"points":3, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
-  "1e-1-basic" : {"points":3, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
-  "1e-2-basic" : {"points":3, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-0-basic" : {"points":1, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-1-basic" : {"points":1, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-2-basic" : {"points":1, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-3-basic" : {"points":2, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-4-basic" : {"points":2, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1e-5-basic" : {"points":2, "question_id":"1e", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
 
-  "1f-0-basic" : {"points":2, "question_id":"1f", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
-  "1f-1-basic" : {"points":2, "question_id":"1f", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
-  "1f-2-basic" : {"points":2, "question_id":"1f", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
-
+  "1f-0-basic" : {"points":3, "question_id":"1f", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
+  "1f-1-basic" : {"points":3, "question_id":"1f", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
 
   "1g-0-hidden" : {"points":1, "question_id":"1g", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},
   "1g-1-hidden" : {"points":2, "question_id":"1g", "is_written":false, "is_coding":true, "is_online":false, "is_extra_credit":false},

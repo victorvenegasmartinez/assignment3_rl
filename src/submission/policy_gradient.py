@@ -347,12 +347,14 @@ class PolicyGradient(object):
             averaged_total_rewards.append(avg_reward)
             self.logger.info(msg)
 
+            last_record += 1
+
             if self.config["env"]["record"] and (
                 last_record > self.config["model_training"]["record_freq"]
             ):
                 self.logger.info("Recording...")
                 last_record = 0
-                self.record()
+                self.record(t)
 
         self.logger.info("- Training done.")
 
@@ -419,7 +421,7 @@ class PolicyGradient(object):
             self.logger.info(msg)
         return avg_reward
 
-    def record(self):
+    def record(self, step):
         """
         Recreate an env and record a video for one episode
         """
@@ -429,6 +431,7 @@ class PolicyGradient(object):
             env,
             self.config["output"]["record_path"].format(self.seed),
             step_trigger=lambda x: x % 100 == 0,
+            name_prefix=f"rl-video-{step}",
         )
         self.evaluate(env, 1)
 
@@ -438,9 +441,9 @@ class PolicyGradient(object):
         """
         # record one game at the beginning
         if self.config["env"]["record"]:
-            self.record()
+            self.record("first")
         # model
         self.train()
         # record one game at the end
         if self.config["env"]["record"]:
-            self.record()
+            self.record("last")

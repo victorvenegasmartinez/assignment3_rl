@@ -108,7 +108,7 @@ class GaussianPolicy(BasePolicy, nn.Module):
 
         Don't forget to assign the created nn.Parameter to the correct device.
 
-        For more information on nn.Paramater please consult the following
+        For more information on nn.Parameter please consult the following
         documentation https://pytorch.org/docs/stable/generated/torch.nn.parameter.Parameter.html
     """
 
@@ -146,11 +146,7 @@ class GaussianPolicy(BasePolicy, nn.Module):
 
         Note:
             PyTorch doesn't have a diagonal Gaussian built in, but you can
-            fashion one out of
-            (a) torch.distributions.MultivariateNormal
-            or
-            (b) A combination of torch.distributions.Normal
-                             and torch.distributions.Independent
+            fashion one out of torch.distributions.MultivariateNormal
 
             Please consult the following documentation for further details on
             the use of probability distributions in Pytorch:

@@ -17,7 +17,7 @@ def build_mlp(input_size, output_size, n_layers, size):
     TODO:
         Build a feed-forward network (multi-layer perceptron, or mlp) that maps
         input_size-dimensional vectors to output_size-dimensional vectors.
-        It should have 'n_layers' hidden layers, each of 'size' units and followed
+        It should have 'n_layers - 1' hidden layers, each of 'size' units and followed
         by a ReLU nonlinearity. The final layer should be linear (no ReLU).
 
         Recall a hidden layer is a layer that occurs between the input and output
