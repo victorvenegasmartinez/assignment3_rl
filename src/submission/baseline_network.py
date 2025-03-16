@@ -100,8 +100,6 @@ class BaselineNetwork(nn.Module):
 
         TODO:
             Compute the loss (MSE), backpropagate, and step self.optimizer.
-            You may find it useful (though not necessary) to perform these steps
-            more than one once, since this method is only called once per policy update.
             If you want to use mini-batch SGD, we have provided a helper function
             called batch_iterator (implemented in utils/network_utils.py).
         """

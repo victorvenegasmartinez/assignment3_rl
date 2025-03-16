@@ -207,12 +207,9 @@ class Test_1e(GradedTestCase):
                 # doesn't respect the action bounds
                 self.assertEqual(action_space.shape, action.shape)
 
-
-# Policy Gradient
-class Test_1f(GradedTestCase):
     @graded(timeout=4, is_hidden=False)
-    def test_0(self):
-        """1f-0-basic: test log probabilities (cartpole)"""
+    def test_3(self):
+        """1e-3-basic: test log probabilities (cartpole)"""
         config = cartpole_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -238,8 +235,8 @@ class Test_1f(GradedTestCase):
         self.assertAlmostEqual(diff, 0, delta=0.01)
 
     @graded(timeout=4, is_hidden=False)
-    def test_1(self):
-        """1f-1-basic: test log probabilities (pendulum)"""
+    def test_4(self):
+        """1e-4-basic: test log probabilities (pendulum)"""
         config = pendulum_config
         device = torch.device("cpu")
         if config["model_training"]["device"] == "gpu":
@@ -271,8 +268,8 @@ class Test_1f(GradedTestCase):
         self.assertAlmostEqual(diff, 0, delta=0.01)
 
     @graded(timeout=4, is_hidden=False)
-    def test_2(self):
-        """1f-2-basic: test log probabilities (cheetah)"""
+    def test_5(self):
+        """1e-5-basic: test log probabilities (cheetah)"""
         config = cheetah_config
         config["model_training"]["device"] = "cpu"
         env = gym.make(config["env"]["env_name"])
@@ -296,6 +293,67 @@ class Test_1f(GradedTestCase):
             )
         diff = np.mean((log_probs - ref_log_probs) ** 2)
         self.assertAlmostEqual(diff, 0, delta=0.01)
+
+# Policy Gradient: policy update
+class Test_1f(GradedTestCase):
+
+    @graded(timeout=4, is_hidden=False)
+    def test_0(self):
+        """1f-0-basic: test update_policy (cartpole_config)"""
+        config = cartpole_config
+        config["model_training"]["device"] = "cpu"
+        env = gym.make(config["env"]["env_name"])
+        pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
+        policy = pg.policy.to(device)
+
+        initial_policy_parameters = {
+            k: torch.clone(v) for k, v in policy.named_parameters()
+        }
+
+        paths, _ = pg.sample_path(env)
+        observations = np.concatenate([path["observation"] for path in paths])
+        actions = np.concatenate([path["action"] for path in paths])
+
+        returns = pg.get_returns(paths)
+
+        advantages = pg.calculate_advantage(returns, observations)
+
+        pg.update_policy(observations, actions, advantages)
+
+        updated_policy_parameters = {
+            k: torch.clone(v) for k, v in policy.named_parameters()
+        }
+
+        update_magnitude = 0
+
+        for k, _ in initial_policy_parameters.items():
+            update_magnitude += torch.abs(
+                torch.sum(
+                    updated_policy_parameters.get(k).data
+                    - initial_policy_parameters.get(k).data
+                )
+            )
+        self.assertTrue(update_magnitude > 0 and update_magnitude < 1)
+
+    @graded(timeout=4, is_hidden=False)
+    def test_1(self):
+        """1f-1-basic: test normalize_advantage (cartpole_config)"""
+        config = cartpole_config
+        config["model_training"]["device"] = "cpu"
+        env = gym.make(config["env"]["env_name"])
+        pg = PolicyGradient(env, config, seed=config["env"]["seed"][0])
+
+        paths, _ = pg.sample_path(env)
+        observations = np.concatenate([path["observation"] for path in paths])
+
+        returns = pg.get_returns(paths)
+
+        advantages = pg.calculate_advantage(returns, observations)
+
+        advantages_mean = np.mean(advantages)
+        advantages_std = np.std(advantages)
+
+        self.assertTrue(np.isclose(advantages_mean, 0, atol=1e-5) == True and advantages_std == 1)
 
 
 ### BEGIN_HIDE ###
