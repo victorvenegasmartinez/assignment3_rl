@@ -68,7 +68,6 @@ device = torch.device("cpu")
 
 # Baseline
 class Test_1b(GradedTestCase):
-
     def setUp(self):
 
         self.config = cartpole_config
@@ -88,7 +87,6 @@ class Test_1b(GradedTestCase):
 
 # Policy
 class Test_1c(GradedTestCase):
-
     def setUp(self):
 
         self.config = cartpole_config
@@ -294,9 +292,9 @@ class Test_1e(GradedTestCase):
         diff = np.mean((log_probs - ref_log_probs) ** 2)
         self.assertAlmostEqual(diff, 0, delta=0.01)
 
+
 # Policy Gradient: policy update
 class Test_1f(GradedTestCase):
-
     @graded(timeout=4, is_hidden=False)
     def test_0(self):
         """1f-0-basic: test update_policy (cartpole_config)"""
@@ -353,7 +351,10 @@ class Test_1f(GradedTestCase):
         advantages_mean = np.mean(advantages)
         advantages_std = np.std(advantages)
 
-        self.assertTrue(np.isclose(advantages_mean, 0, atol=1e-3) == True and advantages_std == 1)
+        self.assertTrue(
+            np.isclose(advantages_mean, 0, atol=1e-6) == True
+            and np.isclose(advantages_std, 1, atol=1e-6)
+        )
 
 
 ### BEGIN_HIDE ###
