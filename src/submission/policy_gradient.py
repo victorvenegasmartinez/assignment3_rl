@@ -323,7 +323,7 @@ class PolicyGradient(object):
         #loss = - 1 * torch.mean(log_probs * advantages)
         tmp=torch.sum(log_probs * advantages)
         tmp1=torch.mean(log_probs * advantages)
-        loss = - 1 * torch.mean(torch.abs(log_probs * advantages))
+        loss = - 1 * torch.sum(log_probs * advantages)
         #loss = torch.mean(log_probs * advantages)
         #if loss>0:
          #   loss=-1*loss
