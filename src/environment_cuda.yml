@@ -1,4 +1,4 @@
-name: XCS234_CUDA
+name: XCS234_CUDA_3
 channels:
   - defaults
   - conda-forge
