@@ -26,7 +26,7 @@ parser.add_argument("--run_basic_tests", required=False, type=bool)
 if __name__ == "__main__":
     args = parser.parse_args()
 
-    #args.config_filename="/Users/victorvenegas/courses/XCS234-A3/src/config/cartpole_no_baseline.yml"
+    #args.config_filename="/Users/victorvenegas/courses/XCS234-A3/src/config/cartpole_baseline.yml"
     if args.config_filename is not None:
         config_file = open("config/{}.yml".format(args.config_filename))
         #config_file = open(args.config_filename)
