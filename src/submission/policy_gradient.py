@@ -324,7 +324,7 @@ class PolicyGradient(object):
         tmp=torch.sum(log_probs * advantages)
         tmp1=torch.mean(log_probs * advantages)
         #loss = - 1 * torch.max(log_probs * advantages)
-        loss = torch.sum(log_probs * advantages)
+        loss = torch.mean(log_probs * advantages)
         if loss>0:
             loss=-1*loss
         self.optimizer.zero_grad()
