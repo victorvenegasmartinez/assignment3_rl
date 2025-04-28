@@ -34,6 +34,9 @@ class BaselineNetwork(nn.Module):
                 self.device = torch.device("mps")
         print(f"Running Baseline model on device {self.device}")
         ### START CODE HERE ###
+        self.network = build_mlp(self.env.observation_space.shape[0], 1, self.config["hyper_params"]["n_layers"],
+                                 self.config["hyper_params"]["layer_size"]).to(self.device)
+        self.optimizer = torch.optim.Adam(self.network.parameters(), lr=self.lr)
         ### END CODE HERE ###
 
     def forward(self, observations):
@@ -55,6 +58,7 @@ class BaselineNetwork(nn.Module):
             (which will be returned).
         """
         ### START CODE HERE ###
+        output = torch.squeeze(self.network(observations))
         ### END CODE HERE ###
         assert output.ndim == 1
         return output
@@ -87,6 +91,9 @@ class BaselineNetwork(nn.Module):
         """
         observations = np2torch(observations, device=self.device)
         ### START CODE HERE ###
+        with torch.no_grad():
+            baseline = self.network(observations).squeeze()
+            advantages = baseline.cpu().numpy() - returns
         ### END CODE HERE ###
         return advantages
 
@@ -103,7 +110,14 @@ class BaselineNetwork(nn.Module):
             If you want to use mini-batch SGD, we have provided a helper function
             called batch_iterator (implemented in utils/network_utils.py).
         """
+        #self.optimizer.zero_grad()
         returns = np2torch(returns, device=self.device)
         observations = np2torch(observations, device=self.device)
         ### START CODE HERE ###
+        loss_fn = nn.MSELoss()
+        baseline = self.network(observations).squeeze()
+        loss = loss_fn(baseline, returns)
+        #self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
         ### END CODE HERE ###

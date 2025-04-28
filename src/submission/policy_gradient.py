@@ -97,6 +97,15 @@ class PolicyGradient(object):
                you can call the parameters() method to get its parameters.
         """
         ### START CODE HERE ###
+        #print(self.config)
+        network = build_mlp(input_size=self.observation_dim, output_size=self.action_dim, n_layers=self.config["hyper_params"]["n_layers"],
+                            size=self.config["hyper_params"]["layer_size"]).to(self.device)
+        if self.discrete:
+            self.policy = CategoricalPolicy(network,self.device)
+        else:
+            self.policy = GaussianPolicy(network, self.action_dim)
+
+        self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=self.lr)
         ### END CODE HERE ###
 
     def init_averages(self):
@@ -219,6 +228,15 @@ class PolicyGradient(object):
         for path in paths:
             rewards = path["reward"]
             ### START CODE HERE ###
+            returns=[]
+            for i in range(len(rewards)):
+                exp = np.array(range(len(rewards)-i))
+                gamma_pwr = np.power(self.config["hyper_params"]["gamma"], exp)
+                g_t = np.sum(gamma_pwr * rewards[i:])
+                returns.append(g_t)
+            #returns = rewards[:]
+            #for i in reversed(range(len(returns) - 1)):
+             #   returns[i] += self.config["hyper_params"]["gamma"] * returns[i + 1]
             ### END CODE HERE ###
             all_returns.append(returns)
         returns = np.concatenate(all_returns)
@@ -243,6 +261,9 @@ class PolicyGradient(object):
         This function is called only if self.config["model_training"]["normalize_advantage"] is True.
         """
         ### START CODE HERE ###
+        mean = np.mean(advantages)
+        advantages = advantages - mean
+        normalized_advantages = advantages / np.std(advantages)
         ### END CODE HERE ###
         return normalized_advantages
 
@@ -296,6 +317,17 @@ class PolicyGradient(object):
         actions = np2torch(actions, device=self.device)
         advantages = np2torch(advantages, device=self.device)
         ### START CODE HERE ###
+        #self.optimizer.zero_grad()
+        act_distribution = self.policy.action_distribution(observations)
+        log_probs = act_distribution.log_prob(actions)
+        #loss = - 1 * torch.mean(log_probs * advantages)
+        tmp=torch.sum(log_probs * advantages)
+        tmp1=torch.mean(log_probs * advantages)
+        #loss = - 1 * torch.max(log_probs * advantages)
+        loss = torch.mean(log_probs * advantages)
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
         ### END CODE HERE ###
 
     def train(self):
