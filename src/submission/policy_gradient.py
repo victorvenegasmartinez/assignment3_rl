@@ -103,7 +103,7 @@ class PolicyGradient(object):
         if self.discrete:
             self.policy = CategoricalPolicy(network,self.device)
         else:
-            self.policy = GaussianPolicy(network, self.action_dim)
+            self.policy = GaussianPolicy(network, self.action_dim,self.device)
 
         self.optimizer = torch.optim.Adam(self.policy.parameters(), lr=self.lr)
         ### END CODE HERE ###
@@ -324,7 +324,9 @@ class PolicyGradient(object):
         tmp=torch.sum(log_probs * advantages)
         tmp1=torch.mean(log_probs * advantages)
         #loss = - 1 * torch.max(log_probs * advantages)
-        loss = torch.mean(log_probs * advantages)
+        loss = torch.sum(log_probs * advantages)
+        if loss>0:
+            loss=-1*loss
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
