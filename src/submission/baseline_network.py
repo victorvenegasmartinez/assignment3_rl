@@ -93,7 +93,8 @@ class BaselineNetwork(nn.Module):
         ### START CODE HERE ###
         with torch.no_grad():
             baseline = self.network(observations).squeeze()
-            advantages = baseline.cpu().numpy() - returns
+            #advantages = baseline.cpu().numpy() - returns
+            advantages = returns - baseline.cpu().numpy()
         ### END CODE HERE ###
         return advantages
 

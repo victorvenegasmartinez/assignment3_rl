@@ -319,11 +319,11 @@ class PolicyGradient(object):
         ### START CODE HERE ###
         #self.optimizer.zero_grad()
         act_distribution = self.policy.action_distribution(observations)
-        log_probs = act_distribution.log_prob(actions)
+        log_probs = -1*act_distribution.log_prob(actions)
         #loss = - 1 * torch.mean(log_probs * advantages)
         tmp=torch.sum(log_probs * advantages)
         tmp1=torch.mean(log_probs * advantages)
-        loss = - 1 * torch.sum(log_probs * advantages)
+        loss = torch.mean(log_probs * advantages)
         #loss = torch.mean(log_probs * advantages)
         #if loss>0:
          #   loss=-1*loss

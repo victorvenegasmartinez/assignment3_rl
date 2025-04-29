@@ -46,6 +46,7 @@ def build_mlp(input_size, output_size, n_layers, size):
         fcnn.append(nn.ReLU())
         in_size=size
     fcnn.append(nn.Linear(size, output_size))
+    #fcnn.append(nn.Softmax(dim=-1))
     model = nn.Sequential(*fcnn)
 
     return model
