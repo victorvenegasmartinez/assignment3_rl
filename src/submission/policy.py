@@ -123,7 +123,8 @@ class GaussianPolicy(BasePolicy, nn.Module):
         self.network = network
         self.device = device
         ### START CODE HERE ###
-        self.log_std = nn.Parameter(torch.ones(action_dim))
+        self.log_std =nn.Parameter(torch.zeros(action_dim))
+        #self.log_std =nn.Parameter(torch.zeros(action_dim,requires_grad=True)).to(self.device)
         ### END CODE HERE ###
 
     def std(self):
@@ -136,7 +137,8 @@ class GaussianPolicy(BasePolicy, nn.Module):
             It can be computed from self.log_std
         """
         ### START CODE HERE ###
-        std = self.log_std.data
+        #std = self.log_std.data
+        std = torch.exp(self.log_std).to(self.device)
         ### END CODE HERE ###
         return std
 
@@ -162,6 +164,8 @@ class GaussianPolicy(BasePolicy, nn.Module):
         ### START CODE HERE ###
         mean = self.network(observations)
         std = self.std().to(self.device)
+        #print(f"self.std():{self.std()}")
+        #std = torch.exp(self.std()).to(self.device)
         distribution = torch.distributions.MultivariateNormal(mean, torch.diag(std))
         ### END CODE HERE ###
         return distribution

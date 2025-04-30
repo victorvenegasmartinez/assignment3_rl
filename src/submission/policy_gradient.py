@@ -323,6 +323,7 @@ class PolicyGradient(object):
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
+        print(f"self.policy.std():{self.policy.std():}")
         ### END CODE HERE ###
 
     def train(self):
