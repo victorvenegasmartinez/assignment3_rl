@@ -37,14 +37,14 @@ def build_mlp(input_size, output_size, n_layers, size):
             model = nn.Sequential(*modules)
     """
     ### START CODE HERE ###
-    #layers_size = [input_size] + n_layers * [size] + [output_size]
+    layers_size = [input_size] + n_layers * [size] + [output_size]
     fcnn = []
     in_size = input_size
     for i in range(n_layers):
-        #fcnn.append(nn.Linear(layers_size[i], layers_size[i+1]))
-        fcnn.append(nn.Linear(in_size, size))
+        fcnn.append(nn.Linear(layers_size[i], layers_size[i+1]))
+        #fcnn.append(nn.Linear(in_size, size))
         fcnn.append(nn.ReLU())
-        in_size=size
+        #in_size=size
     fcnn.append(nn.Linear(size, output_size))
     #fcnn.append(nn.Softmax(dim=-1))
     model = nn.Sequential(*fcnn)

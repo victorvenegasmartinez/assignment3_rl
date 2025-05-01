@@ -122,8 +122,9 @@ class GaussianPolicy(BasePolicy, nn.Module):
         BasePolicy.__init__(self, device)
         self.network = network
         self.device = device
+
         ### START CODE HERE ###
-        self.log_std =nn.Parameter(torch.zeros(action_dim))
+        self.log_std =nn.Parameter(torch.ones(action_dim))
         #self.log_std =nn.Parameter(torch.zeros(action_dim,requires_grad=True)).to(self.device)
         ### END CODE HERE ###
 
@@ -137,8 +138,8 @@ class GaussianPolicy(BasePolicy, nn.Module):
             It can be computed from self.log_std
         """
         ### START CODE HERE ###
-        #std = self.log_std.data
-        std = torch.exp(self.log_std).to(self.device)
+        std = torch.abs(self.log_std)
+        #std = torch.exp(self.log_std).to(self.device)
         ### END CODE HERE ###
         return std
 
